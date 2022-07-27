@@ -1,0 +1,169 @@
+<div class="blogview_content useless_p_margin editor_ke" style="height:auto!important">
+                                <p data-ke-size="size16">&nbsp;</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="895" data-origin-height="459">
+    <span data-url="https://k.kakaocdn.net/dn/lS1pW/btrtakXcMue/hed7KQtcw3vQlBxrAlUUL0/img.png" data-lightbox="lightbox">
+        <img src="https://k.kakaocdn.net/dn/lS1pW/btrtakXcMue/hed7KQtcw3vQlBxrAlUUL0/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FlS1pW%2FbtrtakXcMue%2Fhed7KQtcw3vQlBxrAlUUL0%2Fimg.png" width="565" height="290" data-origin-width="895" data-origin-height="459">
+    </span>
+    
+</figure><p></p>
+<p data-ke-size="size16">AWS EC2 Linux2에 Postgresql을 직접 설치하고 스프링 부트로 연동하기까지의 작업을 해보자.&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26"><b>Postgresql 설치&nbsp;</b></h2>
+<p data-ke-size="size16">먼저 EC2에 접속해서 posrgresql 관련 패키지를 설치해준다.&nbsp;</p>
+<pre id="code_1644658160375" class="shell" data-ke-language="shell" data-ke-type="codeblock"><code class="hljs">sudo amazon-linux-extras install postgresql10 epel -y
+sudo yum install postgresql-server postgresql-devel -y</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">설치한 postgresql 버전을 확인해보자&nbsp;</p>
+<pre id="code_1644658231929" class="shell" data-ke-language="shell" data-ke-type="codeblock"><code class="hljs">/usr/bin/postgres --version</code></pre>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="1078" data-origin-height="76">
+    <span data-url="https://k.kakaocdn.net/dn/bS4Kdn/btrs59wmP3P/OMG6eKsKkzCNoumUjiYWE1/img.png" data-lightbox="lightbox">
+        <img src="https://k.kakaocdn.net/dn/bS4Kdn/btrs59wmP3P/OMG6eKsKkzCNoumUjiYWE1/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FbS4Kdn%2Fbtrs59wmP3P%2FOMG6eKsKkzCNoumUjiYWE1%2Fimg.png" data-origin-width="1078" data-origin-height="76">
+    </span>
+    
+</figure><p></p>
+<p data-ke-size="size16">버전 확인 완료.&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26"><b>Postgresql DB 접속&nbsp;</b></h2>
+<p data-ke-size="size16">아래의 명령어를 입력해 db를 실행시켜준다.</p>
+<pre id="code_1644659087074" class="shell" data-ke-language="shell" data-ke-type="codeblock"><code class="hljs">sudo /usr/bin/postgresql-setup --initdb
+sudo systemctl enable postgresql
+sudo systemctl start postgresql</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">postgresql을 설치할 때 자동으로 생성되는 계정인 postgres 유저로 db에 접속한다.&nbsp;</p>
+<pre id="code_1644659167359" class="ebnf" data-ke-language="shell" data-ke-type="codeblock"><code class="hljs nginx"><span class="hljs-attribute">sudo</span> su - postgres</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">psql로 쿼리를 실행할 수 있다.&nbsp;</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="910" data-origin-height="312">
+    <span data-url="https://k.kakaocdn.net/dn/dOLHmG/btrtb137Mk2/BnNbxivnFXiOcIJxYmN8lK/img.png" data-lightbox="lightbox">
+        <img src="https://k.kakaocdn.net/dn/dOLHmG/btrtb137Mk2/BnNbxivnFXiOcIJxYmN8lK/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FdOLHmG%2Fbtrtb137Mk2%2FBnNbxivnFXiOcIJxYmN8lK%2Fimg.png" width="475" height="163" data-origin-width="910" data-origin-height="312">
+    </span>
+    
+</figure><p></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">user/database 생성&nbsp;</h3>
+<pre id="code_1644659798693" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code class="hljs">CREATE USER noums PASSWORD ‘password’ SUPERUSER;
+CREATE DATABASE bigwave OWNER noums;</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<h3 data-ke-size="size23">외부환경에서 접속할 수 있게 postgresql 설정 변경&nbsp;</h3>
+<pre id="code_1644659942617" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code class="hljs">/var/lib/pgsql/data/postgresql.conf
+/var/lib/pgsql/data/pg_hba.conf</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><span style="color: #ffffff;"><span style="color: #000000;">postgresql.conf -&gt;&nbsp;</span></span><span style="color: #ffffff; background-color: #000000;"> listen_addresses = '*'&nbsp;</span></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-filename="Screen Shot 2022-02-12 at 6.59.37 PM.png" data-origin-width="1446" data-origin-height="224">
+    <span data-url="https://k.kakaocdn.net/dn/qCLB0/btrs4NtvvRa/4tktUamgq5t6tbUwEotFg0/img.png" data-lightbox="lightbox" data-alt="postgresql.conf&amp;amp;amp;amp;nbsp;">
+        <img src="https://k.kakaocdn.net/dn/qCLB0/btrs4NtvvRa/4tktUamgq5t6tbUwEotFg0/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FqCLB0%2Fbtrs4NtvvRa%2F4tktUamgq5t6tbUwEotFg0%2Fimg.png" width="563" height="87" data-filename="Screen Shot 2022-02-12 at 6.59.37 PM.png" data-origin-width="1446" data-origin-height="224">
+    </span>
+    <figcaption>postgresql.conf&amp;amp;amp;nbsp;</figcaption>
+</figure><p></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><span style="color: #777777;">pg_hba.conf&nbsp; -&gt;&nbsp; <span style="background-color: #000000; color: #ffffff;">host&nbsp; &nbsp;all&nbsp; &nbsp; all&nbsp; &nbsp;0.0.0.0/0&nbsp; &nbsp; md5&nbsp;</span></span></p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="1302" data-origin-height="530">
+    <span data-url="https://k.kakaocdn.net/dn/ctldgV/btrs5z9j8n5/ClZ5n6C9kBhgNiRvKeD27k/img.png" data-lightbox="lightbox" data-alt="pg_hba.conf&amp;amp;amp;amp;nbsp;">
+        <img src="https://k.kakaocdn.net/dn/ctldgV/btrs5z9j8n5/ClZ5n6C9kBhgNiRvKeD27k/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FctldgV%2Fbtrs5z9j8n5%2FClZ5n6C9kBhgNiRvKeD27k%2Fimg.png" width="553" height="225" data-origin-width="1302" data-origin-height="530">
+    </span>
+    <figcaption>pg_hba.conf&amp;amp;amp;nbsp;</figcaption>
+</figure><p></p>
+<p data-ke-size="size16">&nbsp;</p>
+<pre id="code_1644660148615" class="bash" data-ke-language="bash" data-ke-type="codeblock"><code class="hljs">sudo systemctl restart postgresql</code></pre>
+<p data-ke-size="size16">설정 파일 변경 후 postgresql 재시작을 해주어야 적용된다.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26"><b>AWS 보안 그룹 인바운드 규칙 설정&nbsp;</b></h2>
+<p data-ke-size="size16">외부에서 접속할 수 있게 postgresql 5432 포트 번호를 개방해주어야 한다.&nbsp;</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="1041" data-origin-height="96">
+    <span data-url="https://k.kakaocdn.net/dn/bMsYCi/btrs9hNcqvs/UTKzTqDMh4rcZOHQTW4sKk/img.png" data-lightbox="lightbox">
+        <img src="https://k.kakaocdn.net/dn/bMsYCi/btrs9hNcqvs/UTKzTqDMh4rcZOHQTW4sKk/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FbMsYCi%2Fbtrs9hNcqvs%2FUTKzTqDMh4rcZOHQTW4sKk%2Fimg.png" data-origin-width="1041" data-origin-height="96">
+    </span>
+    
+</figure><p></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b><i>접속 확인&nbsp;</i></b></p>
+<p data-ke-size="size16">인텔리제이에서 postgresql db에 접속이 잘 되는지 테스트해보자.&nbsp;</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="910" data-origin-height="660">
+    <span data-url="https://k.kakaocdn.net/dn/K15MH/btrs8ByoCnl/fxrSp3HOf67OtbULJI8Mbk/img.png" data-lightbox="lightbox">
+        <img src="https://k.kakaocdn.net/dn/K15MH/btrs8ByoCnl/fxrSp3HOf67OtbULJI8Mbk/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FK15MH%2Fbtrs8ByoCnl%2FfxrSp3HOf67OtbULJI8Mbk%2Fimg.png" data-origin-width="910" data-origin-height="660">
+    </span>
+    
+</figure><p></p>
+<p data-ke-size="size16">Name : 접속할 DB</p>
+<p data-ke-size="size16">Host : 퍼블릭IP</p>
+<p data-ke-size="size16">Port : 5432</p>
+<p data-ke-size="size16">Databse : postgres</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<h2 data-ke-size="size26"><b>스프링 부트에 postgresql db 접속 정보 설정하기&nbsp;</b></h2>
+<p data-ke-size="size16">먼저 <b>build.gradle</b>에서 postgresql 의존성 추가</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="1348" data-origin-height="112">
+    <span data-url="https://k.kakaocdn.net/dn/45pEl/btrs6bgA2D7/cKMWdXFDPSykMJKgyEEAl1/img.png" data-lightbox="lightbox">
+        <img src="https://k.kakaocdn.net/dn/45pEl/btrs6bgA2D7/cKMWdXFDPSykMJKgyEEAl1/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2F45pEl%2Fbtrs6bgA2D7%2FcKMWdXFDPSykMJKgyEEAl1%2Fimg.png" data-origin-width="1348" data-origin-height="112">
+    </span>
+    
+</figure><p></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><b>application.properties</b> 설정하기&nbsp;</p>
+<pre id="code_1644662695970" class="shell" data-ke-language="shell" data-ke-type="codeblock"><code class="hljs"><span class="hljs-meta">#</span><span class="bash"> PostgreSql</span>
+spring.datasource.url=jdbc:postgresql://3.35.50.206:5432/postgres
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+<span class="hljs-meta">
+
+#</span><span class="bash"> JPA</span>
+spring.jpa.properties.hibernate.use_sql_comments=true
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show_sql=true</code></pre>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">application.properties 설정까지 마쳤으면 스프링 애플리케이션을 실행해서 데이터를 저장해보자.</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">테이블이 생성되고 값이 제대로 insert 된 것을 확인할 수 있다.&nbsp;</p>
+<p></p><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="2668" data-origin-height="82">
+    <span data-url="https://k.kakaocdn.net/dn/RDh4N/btrs9jEfi7d/enFoP4JikoNoIoXVVSEPP0/img.png" data-lightbox="lightbox" data-alt="springboot console log">
+        <img src="https://k.kakaocdn.net/dn/RDh4N/btrs9jEfi7d/enFoP4JikoNoIoXVVSEPP0/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FRDh4N%2Fbtrs9jEfi7d%2FenFoP4JikoNoIoXVVSEPP0%2Fimg.png" data-origin-width="2668" data-origin-height="82">
+    </span>
+    <figcaption>springboot console log</figcaption>
+</figure><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="858" data-origin-height="278">
+    <span data-url="https://k.kakaocdn.net/dn/dfTtoF/btrs9jK0p4h/2jelpjrKRf4osuz1Ehb8x0/img.png" data-lightbox="lightbox" data-alt="ec2 postgresql db">
+        <img src="https://k.kakaocdn.net/dn/dfTtoF/btrs9jK0p4h/2jelpjrKRf4osuz1Ehb8x0/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FdfTtoF%2Fbtrs9jK0p4h%2F2jelpjrKRf4osuz1Ehb8x0%2Fimg.png" width="580" height="188" data-origin-width="858" data-origin-height="278">
+    </span>
+    <figcaption>ec2 postgresql db</figcaption>
+</figure><figure class="imageblock alignCenter" data-ke-mobilestyle="widthOrigin" data-origin-width="1582" data-origin-height="230">
+    <span data-url="https://k.kakaocdn.net/dn/dEjvTv/btrs7ByQSft/ttNY5Maxkf0jbvkKoEppC0/img.png" data-lightbox="lightbox" data-alt="query select">
+        <img src="https://k.kakaocdn.net/dn/dEjvTv/btrs7ByQSft/ttNY5Maxkf0jbvkKoEppC0/img.png" onerror="this.onerror=null; this.src='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png'; this.srcset='//t1.daumcdn.net/tistory_admin/static/images/no-image-v1.png';" srcset="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&amp;fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2FdEjvTv%2Fbtrs7ByQSft%2FttNY5Maxkf0jbvkKoEppC0%2Fimg.png" width="585" height="85" data-origin-width="1582" data-origin-height="230">
+    </span>
+    <figcaption>query select</figcaption>
+</figure><p></p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><a href="https://devegoist.tistory.com/1#recentComments" target="_blank" rel="noopener">https://devegoist.tistory.com/1#recentComments</a></p>
+<figure id="og_1644659589622" contenteditable="false" data-ke-type="opengraph" data-ke-align="alignCenter" data-og-type="article" data-og-title="Amazon EC2 Linux 2에 Postgresql 설치" data-og-description="기념할만한 첫 글이다. 프리티어가 끝나서, 가장 낮은 등급의 인스턴스를 사용함에도 하루 약 1달러라는 높은 비용이 드는 RDS를 대체하기 위하여 EC2에 직접 DB를 설치해서 사용하기 위해 작업한 " data-og-host="devegoist.tistory.com" data-og-source-url="https://devegoist.tistory.com/1#recentComments" data-og-url="https://devegoist.tistory.com/1" data-og-image="https://scrap.kakaocdn.net/dn/cqhKSg/hyNnT0fHz6/HK5uzWxCZ8FbhKNQGrNiFK/img.jpg?width=800&amp;height=400&amp;face=0_0_800_400,https://scrap.kakaocdn.net/dn/Wb4IV/hyNnRg26cR/o87yACE7QM1oQisR0eE4m1/img.jpg?width=800&amp;height=400&amp;face=0_0_800_400,https://scrap.kakaocdn.net/dn/wFOg3/hyNnSmI68F/M9q8EsmPkSauZIcAlR248k/img.png?width=994&amp;height=418&amp;face=0_0_994_418"><a href="https://devegoist.tistory.com/1#recentComments" target="_blank" rel="noopener" data-source-url="https://devegoist.tistory.com/1#recentComments">
+<div class="og-image" style="background-image: url('https://scrap.kakaocdn.net/dn/cqhKSg/hyNnT0fHz6/HK5uzWxCZ8FbhKNQGrNiFK/img.jpg?width=800&amp;height=400&amp;face=0_0_800_400,https://scrap.kakaocdn.net/dn/Wb4IV/hyNnRg26cR/o87yACE7QM1oQisR0eE4m1/img.jpg?width=800&amp;height=400&amp;face=0_0_800_400,https://scrap.kakaocdn.net/dn/wFOg3/hyNnSmI68F/M9q8EsmPkSauZIcAlR248k/img.png?width=994&amp;height=418&amp;face=0_0_994_418');">&nbsp;</div>
+<div class="og-text">
+<p class="og-title" data-ke-size="size16">Amazon EC2 Linux 2에 Postgresql 설치</p>
+<p class="og-desc" data-ke-size="size16">기념할만한 첫 글이다. 프리티어가 끝나서, 가장 낮은 등급의 인스턴스를 사용함에도 하루 약 1달러라는 높은 비용이 드는 RDS를 대체하기 위하여 EC2에 직접 DB를 설치해서 사용하기 위해 작업한</p>
+<p class="og-host" data-ke-size="size16">devegoist.tistory.com</p>
+</div>
+</a></figure>
+<p data-ke-size="size16">&nbsp;</p>
+<p data-ke-size="size16"><a href="https://awse2050.tistory.com/44" target="_blank" rel="noopener">https://awse2050.tistory.com/44</a></p>
+<figure id="og_1644662903160" contenteditable="false" data-ke-type="opengraph" data-ke-align="alignCenter" data-og-type="article" data-og-title="Spring Data JPA 와 Postgresql 연동" data-og-description="빠르게 방법만 우선 포스팅 하겠습니다. 1. build.gradle 직접 프로젝트 생성시 의존성 추가를 하셔도 됩니다. 2. application.properties # Postgresql spring.datasource.url=jdbc:postgresql://localhost:5432.." data-og-host="awse2050.tistory.com" data-og-source-url="https://awse2050.tistory.com/44" data-og-url="https://awse2050.tistory.com/44" data-og-image="https://scrap.kakaocdn.net/dn/vQqXE/hyNpmT4ekd/rIz3k1nIAnBK4OLkE07bk1/img.png?width=800&amp;height=354&amp;face=0_0_800_354,https://scrap.kakaocdn.net/dn/bx8FRP/hyNnZMWXMn/TkK4r0MykYjl1KAxp3tPI0/img.png?width=800&amp;height=354&amp;face=0_0_800_354,https://scrap.kakaocdn.net/dn/29IMX/hyNpfOawKO/RNaCp52Ib4JgRMlmy66Ib1/img.png?width=781&amp;height=822&amp;face=0_0_781_822"><a href="https://awse2050.tistory.com/44" target="_blank" rel="noopener" data-source-url="https://awse2050.tistory.com/44">
+<div class="og-image" style="background-image: url('https://scrap.kakaocdn.net/dn/vQqXE/hyNpmT4ekd/rIz3k1nIAnBK4OLkE07bk1/img.png?width=800&amp;height=354&amp;face=0_0_800_354,https://scrap.kakaocdn.net/dn/bx8FRP/hyNnZMWXMn/TkK4r0MykYjl1KAxp3tPI0/img.png?width=800&amp;height=354&amp;face=0_0_800_354,https://scrap.kakaocdn.net/dn/29IMX/hyNpfOawKO/RNaCp52Ib4JgRMlmy66Ib1/img.png?width=781&amp;height=822&amp;face=0_0_781_822');">&nbsp;</div>
+<div class="og-text">
+<p class="og-title" data-ke-size="size16">Spring Data JPA 와 Postgresql 연동</p>
+<p class="og-desc" data-ke-size="size16">빠르게 방법만 우선 포스팅 하겠습니다. 1. build.gradle 직접 프로젝트 생성시 의존성 추가를 하셔도 됩니다. 2. application.properties # Postgresql spring.datasource.url=jdbc:postgresql://localhost:5432..</p>
+<p class="og-host" data-ke-size="size16">awse2050.tistory.com</p>
+</div>
+</a></figure>
+<p data-ke-size="size16">&nbsp;</p>
+            
+            
+                </div>
