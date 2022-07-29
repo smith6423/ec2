@@ -1,1 +1,12 @@
-tests
+git init
+.git 하위 디렉토리 생성
+폴더를만든후 그안에서 명령 실행
+
+git branch -m main
+브랜치 이름 변경
+
+git remote add origin 주소
+git add.
+git commit -m "first commit"
+git pull --rebase origin main
+git push -u origin main
